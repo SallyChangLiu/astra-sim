@@ -35,6 +35,12 @@ class AstraSimDataAPI {
   double workload_finished_time;
   double total_compute;
   double total_exposed_comm;
+
+  // Added by Divya to port congestion backend
+  virtual void pass_front_end_report(AstraSimDataAPI astraSimDataApi){
+      return;
+  }
+
 };
 
 } // namespace AstraSim

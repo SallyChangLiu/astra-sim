@@ -10,6 +10,13 @@ LICENSE file in the root directory of this source tree.
 
 namespace AstraSim {
 
+    // Divya: To post congestion backend into Chakra
+struct sim_comm {
+    std::string comm_name;
+};
+
+// ----------------------------------------- //
+
 class AstraNetworkAPI {
  public:
   enum class BackendType {
@@ -66,6 +73,13 @@ class AstraNetworkAPI {
   };
 
   int rank;
+
+  // New functions ported from 1.0 for integrating
+  // the congestion network backend. -- Should be cleaned up later
+  //virtual int sim_comm_size(sim_comm comm, int* size)=0;
+  //virtual int sim_finish() = 0;
+  //virtual double sim_time_resolution() = 0;
+  //virtual int sim_init(AstraMemoryAPI* MEM) = 0;
 };
 
 } // namespace AstraSim
