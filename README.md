@@ -160,7 +160,7 @@ For using congestion network backend
 ```bash
 $ cd -
 $ ./build/astra_congestion/build/AstraCongestion/bin/AstraCongestion \
-  --workload-configuration=./extern/graph_frontend/chakra/et_generator/twoCompNodesDependent \
+  --workload-configuration=./inputs/workload/ASTRA-sim-2.0/Resnet50_DataParallel \
   --system-configuration=./inputs/system/sample_fully_connected_sys.txt \
   --network-configuration=./inputs/network/congestion/fully_connected.yml
 ```
