@@ -17,8 +17,9 @@ function setup {
 
 function compile {
     cd "${BUILD_DIR}" || exit
-    cmake ..
-    make
+    # cmake ..
+	cmake -DCMAKE_BUILD_TYPE=Debug ..
+    make -j 4
 }
 
 case "$1" in
