@@ -52,6 +52,10 @@ Then, based on your target network backend, execute the corresponding build scri
 ```bash
 # For the analytical network backend
 $ ./build/astra_analytical/build.sh -c
+
+
+# For the analytical congestion backend
+$ ./build/astra_congestion/build.sh -c
 ```
 
 ### 2. Build ASTRA-sim in a Docker Image
@@ -76,6 +80,10 @@ Finally, similar to the local build process, depending on your target network ba
 ```bash
 # For the analytical network backend
 $ ./build/astra_analytical/build.sh -c
+
+# For the analytical congestion backend
+$ ./build/astra_congestion/build.sh -c
+
 ```
 
 ## Running ASTRA-sim
@@ -105,6 +113,15 @@ $ ./build/astra_analytical/build/AnalyticalAstra/bin/AnalyticalAstra \
   --workload-configuration=./extern/graph_frontend/chakra/et_generator/twoCompNodesDependent \
   --system-configuration=./inputs/system/sample_fully_connected_sys.txt \
   --network-configuration=./inputs/network/analytical/fully_connected.json
+```
+
+For using congestion network backend
+```bash
+$ cd -
+$ ./build/astra_congestion/build/AstraCongestion/bin/AstraCongestion \
+  --workload-configuration=./extern/graph_frontend/chakra/et_generator/twoCompNodesDependent \
+  --system-configuration=./inputs/system/sample_fully_connected_sys.txt \
+  --network-configuration=./inputs/network/congestion/fully_connected.yml
 ```
 
 Upon completion, ASTRA-sim will display the number of cycles it took to run the simulation.
@@ -137,6 +154,15 @@ $ ./build/astra_analytical/build/AnalyticalAstra/bin/AnalyticalAstra \
   --workload-configuration=./inputs/workload/ASTRA-sim-2.0/Resnet50_DataParallel \
   --system-configuration=./inputs/system/sample_fully_connected_sys.txt \
   --network-configuration=./inputs/network/analytical/fully_connected.json
+```
+
+For using congestion network backend
+```bash
+$ cd -
+$ ./build/astra_congestion/build/AstraCongestion/bin/AstraCongestion \
+  --workload-configuration=./extern/graph_frontend/chakra/et_generator/twoCompNodesDependent \
+  --system-configuration=./inputs/system/sample_fully_connected_sys.txt \
+  --network-configuration=./inputs/network/congestion/fully_connected.yml
 ```
 
 Upon completion, ASTRA-sim will display the number of cycles it took to run the simulation.
@@ -176,3 +202,4 @@ This project is a collaboration of dedicated professionals. Each core developer 
 * Santosh Kumar Elangoven (Georgia Tech)
 * Greg Steinbrecher (Meta)
 * Changhai Man (Georgia Tech)
+* Divya Kiran Kadiyala (Georgia Tech)
