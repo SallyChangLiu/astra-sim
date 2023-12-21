@@ -16,4 +16,4 @@
 	url = git@github.com:mlcommons/chakra.git
 [submodule "extern/network_backend/ns3"]
 	path = extern/network_backend/ns3
-	url = git@github.com:SallyChangLiu/RDMA-NS3.git
+	url = git@github.com:SallyChangLiu/NS3-RDMA.git
