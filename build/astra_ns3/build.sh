@@ -2,10 +2,12 @@
 
 # Absolue path to this script
 SCRIPT_DIR=$(dirname "$(realpath $0)")
+BUILD_DIR="${SCRIPT_DIR:?}"/build
 
 # Absolute paths to useful directories
 ASTRA_SIM_DIR="${SCRIPT_DIR:?}"/../../astra-sim
 NS3_DIR="${SCRIPT_DIR:?}"/../../extern/network_backend/ns3
+CHAKRA_ET_DIR="${SCRIPT_DIR:?}"/../../extern/graph_frontend/chakra/et_def
 
 # Inputs - change as necessary.
 WORKLOAD="${SCRIPT_DIR:?}"/../../extern/graph_frontend/chakra/et_generator/oneCommNodeAllReduce
@@ -21,21 +23,30 @@ function setup {
     protoc et_def.proto\
         --proto_path ${SCRIPT_DIR}/../../extern/graph_frontend/chakra/et_def/\
         --cpp_out ${SCRIPT_DIR}/../../extern/graph_frontend/chakra/et_def/
+
+    # make build directory if one doesn't exist
+    if [[ ! -d "${BUILD_DIR:?}" ]]; then
+      mkdir -p "${BUILD_DIR:?}"
+    fi
+
+    # set concurrent build threads, capped at 16
+    NUM_THREADS=$(nproc)
+    if [[ ${NUM_THREADS} -ge 16 ]]; then
+      NUM_THREADS=16
+    fi
 }
 
 function compile {
     # Only compile & Run the AstraSimNetwork ns3program
-    cp "${ASTRA_SIM_DIR}"/network_frontend/ns3/AstraSimNetwork.cc "${NS3_DIR}"/simulation/scratch/
-    cp "${ASTRA_SIM_DIR}"/network_frontend/ns3/*.h "${NS3_DIR}"/simulation/scratch/
-    cd "${NS3_DIR}/simulation"
-    CC='gcc-5' CXX='g++-5' ./waf configure 
-    CC='gcc-5' CXX='g++-5' ./waf build 
+    cd "${NS3_DIR}"
+    ./ns3 configure --enable-mtp --enable-examples
+    ./ns3 build
     cd "${SCRIPT_DIR:?}"
 }
 
 function run {
-    cd "${NS3_DIR}/simulation"
-    ./waf --run "scratch/AstraSimNetwork \
+    cd "${NS3_DIR}"
+    ./ns3 run "scratch/AstraSimNetwork \
         --workload-configuration=${WORKLOAD} \
         --system-configuration=${SYSTEM} \
         --network-configuration=${NETWORK} \
@@ -46,8 +57,9 @@ function run {
 }
 
 function cleanup {
-    cd "${NS3_DIR}/simulation"
-    ./waf distclean
+    cd "${NS3_DIR}"
+    ./ns3 clean
+    rm -rf "${BUILD_DIR:?}"
     cd "${SCRIPT_DIR:?}"
 }
 
@@ -56,16 +68,21 @@ function cleanup_result {
 }
 
 function debug {
-    cp "${ASTRA_SIM_DIR}"/network_frontend/ns3/AstraSimNetwork.cc "${NS3_DIR}"/simulation/scratch/
-    cp "${ASTRA_SIM_DIR}"/network_frontend/ns3/*.h "${NS3_DIR}"/simulation/scratch/
-    cd "${NS3_DIR}/simulation"
-    CC='gcc-5' CXX='g++-5' ./waf configure
-    ./waf  --run 'scratch/AstraSimNetwork' --command-template="gdb --args %s ${NETWORK} \
+    cd "${NS3_DIR}"
+    ./ns3 configure --enable-mtp --enable-examples
+    ./ns3 run 'scratch/AstraSimNetwork' --command-template="gdb --args %s ${NETWORK} \
         --workload-configuration=${WORKLOAD} \
         --system-configuration=${SYSTEM} \
         --remote-memory-configuration=${MEMORY} \
         --logical-topology-configuration=${LOGICAL_TOPOLOGY} \
         --comm-group-configuration=\"empty\""
+}
+
+function compile_astrasim_ns3() {
+  # compile AstraSim
+  cd "${BUILD_DIR:?}" || exit
+  cmake ..
+  cmake --build . -j "${NUM_THREADS:?}"
 }
 
 # Main Script
@@ -77,12 +94,15 @@ case "$1" in
     cleanup_result;;
 -d|--debug)
     setup
+    compile_astrasim_ns3
     debug;;
 -c|--compile)
     setup
+    compile_astrasim_ns3
     compile;;
 -r|--run)
     setup
+    compile_astrasim_ns3
     compile
     run;;
 -h|--help|*)
