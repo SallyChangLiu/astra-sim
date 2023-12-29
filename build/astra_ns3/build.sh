@@ -10,12 +10,12 @@ NS3_DIR="${SCRIPT_DIR:?}"/../../extern/network_backend/ns3
 CHAKRA_ET_DIR="${SCRIPT_DIR:?}"/../../extern/graph_frontend/chakra/et_def
 
 # Inputs - change as necessary.
-WORKLOAD="${SCRIPT_DIR:?}"/../../extern/graph_frontend/chakra/et_generator/oneCommNodeAllReduce
+WORKLOAD="${SCRIPT_DIR:?}"/../../extern/graph_frontend/chakra/one_comm_coll_node_allgather
 SYSTEM="${SCRIPT_DIR:?}"/../../inputs/system/Switch.json
 MEMORY="${SCRIPT_DIR:?}"/../../inputs/remote_memory/analytical/no_memory_expansion.json
 LOGICAL_TOPOLOGY="${SCRIPT_DIR:?}"/../../inputs/network/ns3/sample_64nodes_1D.json
 # Note that ONLY this file is relative to NS3_DIR/simulation
-NETWORK="mix/config.txt"
+NETWORK="config/fat4.json"
 
 
 # Functions
@@ -46,7 +46,7 @@ function compile {
 
 function run {
     cd "${NS3_DIR}"
-    ./ns3 run "scratch/AstraSimNetwork \
+    ./ns3 run "AstraSimNetwork \
         --workload-configuration=${WORKLOAD} \
         --system-configuration=${SYSTEM} \
         --network-configuration=${NETWORK} \
@@ -70,7 +70,7 @@ function cleanup_result {
 function debug {
     cd "${NS3_DIR}"
     ./ns3 configure --enable-mtp --enable-examples
-    ./ns3 run 'scratch/AstraSimNetwork' --command-template="gdb --args %s ${NETWORK} \
+    ./ns3 run 'AstraSimNetwork' --command-template="gdb --args %s ${NETWORK} \
         --workload-configuration=${WORKLOAD} \
         --system-configuration=${SYSTEM} \
         --remote-memory-configuration=${MEMORY} \
