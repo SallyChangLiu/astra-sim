@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.15)
 # C++ requirement
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+set(CMAKE_BUILD_TYPE Debug)
 # Set the build type to Release if not specified
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -34,13 +34,17 @@ add_library(AstraSim STATIC ${srcs})
 
 # Link libraries
 target_link_libraries(AstraSim PUBLIC ${Protobuf_LIBRARIES})
+# target_link_libraries(AstraSim PUBLIC /home/cliu/anaconda3/envs/astra-sim/lib/libprotobuf.so)
+# target_include_directories(AstraSim PUBLIC /home/cliu/anaconda3/envs/astra-sim/include/)
 
 # Include Directories
 target_include_directories(AstraSim PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(AstraSim PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/extern/graph_frontend/chakra/)
 target_include_directories(AstraSim PUBLIC ${Protobuf_INCLUDE_DIRS})
 target_include_directories(AstraSim PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/extern/helper/)
-
+message("=============================")
+message(${Protobuf_LIBRARIES})
+message(${Protobuf_INCLUDE_DIRS})
 # Properties
 set_target_properties(AstraSim PROPERTIES COMPILE_WARNING_AS_ERROR ON)
 set_target_properties(AstraSim
